@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aldandi Gowawardhana | Multimedia Journalist</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        noir: {
+                            900: '#0a0a0a',
+                            800: '#171717',
+                            700: '#262626',
+                            100: '#f5f5f5',
+                        },
+                        accent: '#a3a3a3', // Muted silver for sleekness
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #404040; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #525252; 
+        }
+        
+        /* Smooth Fade In Animation for Sections */
+        .section-fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .section-fade-in.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .grain-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+        
+        /* Realistic Eye Details */
+        #eye {
+            box-shadow: inset 0 0 4px rgba(0,0,0,0.4);
+            background: radial-gradient(circle at 30% 30%, #fff0f0 10%, #ffe0e0 80%, #ffcccc 100%); /* Reddish tint to sclera */
+        }
+        #iris {
+            background: radial-gradient(circle, #ef4444 0%, #b91c1c 70%, #7f1d1d 100%); /* Red iris */
+            border: 1px solid #7f1d1d;
+        }
+        /* Red Veins in Eye */
+        .vein {
+            position: absolute;
+            background: rgba(220, 38, 38, 0.6); /* More visible red */
+            height: 1px;
+            pointer-events: none;
+        }
+
+        /* Typewriter Cursor */
+        .typewriter-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.2em;
+            background-color: #a3a3a3;
+            margin-left: 2px;
+            vertical-align: text-bottom;
+            animation: blink-cursor 0.7s infinite;
+        }
+
+        @keyframes blink-cursor {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Scroll Progress Bar */
+        #scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(to right, #b91c1c, #ef4444); /* Red gradient matching eye */
+            z-index: 100;
+            width: 0%;
+            transition: width 0.1s;
+        }
+
+        /* 3D Tilt Effect */
+        .tilt-card {
+            transition: transform 0.1s ease-out;
+            transform-style: preserve-3d;
+        }
+        
+        /* Back to Top Button */
+        #back-to-top {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s, transform 0.3s;
+            transform: translateY(20px);
+        }
+        #back-to-top.visible {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-noir-900 text-noir-100 antialiased selection:bg-white selection:text-black">
+
+    <!-- Scroll Progress Bar -->
+    <div id="scroll-progress"></div>
+
+    <!-- Grain Effect Overlay for "Film Noir" feel -->
+    <div class="grain-overlay"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-40 bg-noir-900/90 backdrop-blur-sm border-b border-white/10 transition-all duration-300" id="navbar">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="font-serif font-bold text-xl tracking-wider flex items-center gap-3 group">
+                Vuseanday
+                <!-- Interactive Eyeball -->
+                <div id="eye" class="relative w-6 h-6 bg-white rounded-full overflow-hidden border border-gray-400 flex items-center justify-center shadow-inner">
+                    <!-- Red Veins -->
+                    <div class="vein w-3 top-2 left-0 rotate-12 opacity-80"></div>
+                    <div class="vein w-2 bottom-1 right-0 -rotate-12 opacity-80"></div>
+                    <div class="vein w-2 top-1 right-1 rotate-45 opacity-60"></div>
+                    
+                    <div id="iris" class="w-3 h-3 rounded-full relative flex items-center justify-center overflow-hidden">
+                        <div id="pupil" class="w-1.5 h-1.5 bg-black rounded-full"></div>
+                        <div class="absolute top-0.5 right-0.5 w-0.5 h-0.5 bg-white rounded-full opacity-60"></div> <!-- Reflection -->
+                    </div>
+                    <div id="eyelid" class="absolute top-0 left-0 w-full bg-noir-900 z-10 transition-all duration-75 border-b border-red-900/30" style="height: 0%;"></div>
+                </div>
+            </a>
+            <div class="hidden md:flex space-x-8 text-sm font-light tracking-wide text-gray-400">
+                <a href="#journalism" class="nav-link hover:text-white transition-all duration-300 hover:tracking-widest">Journalism</a>
+                <a href="#creative" class="nav-link hover:text-white transition-all duration-300 hover:tracking-widest">Creative</a>
+                <a href="#interactive" class="nav-link hover:text-white transition-all duration-300 hover:tracking-widest">Interactive</a>
+                <a href="#digital" class="nav-link hover:text-white transition-all duration-300 hover:tracking-widest">Digital</a>
+                <a href="#organization" class="nav-link hover:text-white transition-all duration-300 hover:tracking-widest">Experience</a>
+            </div>
+            <!-- Mobile Menu Icon -->
+            <button class="md:hidden text-white" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                <i data-lucide="menu"></i>
+            </button>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-noir-800 border-b border-white/10 p-4 space-y-4 text-center">
+            <a href="#journalism" class="block text-gray-400 hover:text-white">Journalism</a>
+            <a href="#creative" class="block text-gray-400 hover:text-white">Creative</a>
+            <a href="#interactive" class="block text-gray-400 hover:text-white">Interactive</a>
+            <a href="#digital" class="block text-gray-400 hover:text-white">Digital</a>
+            <a href="#organization" class="block text-gray-400 hover:text-white">Experience</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative min-h-screen flex items-center justify-center pt-20 section-fade-in is-visible">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <!-- Profile Image -->
+            <div class="w-32 h-32 md:w-48 md:h-48 mx-auto mb-8 rounded-full overflow-hidden border-2 border-white/20 relative group hover:border-white/60 transition-colors duration-500">
+                <img src="profile.jpg" 
+                     onerror="this.src='https://images.unsplash.com/photo-1511367461989-f85a21fda167?q=80&w=1331&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'"
+                     alt="Aldandi Gowawardhana" 
+                     class="w-full h-full object-cover grayscale contrast-125 transition-transform duration-700 ease-out opacity-90 group-hover:opacity-100 group-hover:scale-110"
+                     style="object-position: 50% 35%; transform: scale(1.3);">
+            </div>
+
+            <h1 class="font-serif text-4xl md:text-6xl font-bold mb-4 tracking-tight leading-tight">
+                Aldandi Gowawardhana
+            </h1>
+            <h2 class="text-xl md:text-2xl text-gray-400 font-light mb-8 font-serif italic h-8 flex items-center justify-center">
+                <span id="typewriter-text"></span><span class="typewriter-cursor"></span>
+            </h2>
+            
+            <div class="max-w-2xl mx-auto space-y-6">
+                <p class="text-gray-300 font-light leading-relaxed text-lg">
+                    <span class="font-medium text-white block mb-2">Journalist. Author. Developer.</span>
+                    Merging investigative rigor with creative narrative.
+                </p>
+                <div class="flex flex-col md:flex-row justify-center items-center gap-3 text-sm text-gray-500 font-mono">
+                    <span class="flex items-center gap-2 hover:text-white transition-colors"><i data-lucide="map-pin" class="w-4 h-4"></i> Final-Year at UMN</span>
+                    <span class="hidden md:inline">•</span>
+                    <span class="flex items-center gap-2 hover:text-white transition-colors"><i data-lucide="pen-tool" class="w-4 h-4"></i> Writing "Dream Girl"</span>
+                    <span class="hidden md:inline">•</span>
+                    <span class="flex items-center gap-2 hover:text-white transition-colors"><i data-lucide="code" class="w-4 h-4"></i> Creator of Cosmic Harvest</span>
+                </div>
+            </div>
+
+            <div class="mt-12 flex justify-center gap-4">
+                <a href="#journalism" class="border border-white/30 px-6 py-3 text-sm tracking-widest hover:bg-white hover:text-black transition-all duration-300">VIEW WORK</a>
+                <a href="#contact" class="bg-white text-black px-6 py-3 text-sm tracking-widest font-medium hover:bg-gray-200 transition-all duration-300">CONTACT</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Section A: Investigative & Social Impact (Journalism) -->
+    <section id="journalism" class="py-24 bg-noir-900 relative section-fade-in">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="flex items-end gap-4 mb-12 border-b border-white/10 pb-4">
+                <h2 class="font-serif text-3xl md:text-4xl text-white">Investigative & Impact</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Main Feature: Reformed Village -->
+                <a href="https://youtu.be/rVMGM0fdrAo" target="_blank" class="block group cursor-pointer h-full tilt-card-container">
+                    <div class="tilt-card aspect-video overflow-hidden bg-noir-800 mb-4 border border-white/5 relative h-64 md:h-auto shadow-2xl">
+                        <img src="reformed_village.jpg" 
+                             onerror="this.src='https://images.unsplash.com/photo-1590608897129-79da98d15969?q=80&w=800&auto=format&fit=crop'"
+                             class="w-full h-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500 grayscale">
+                        <div class="absolute top-4 left-4 bg-white text-black text-xs font-bold px-2 py-1 uppercase tracking-wider">Featured Thesis</div>
+                        <div class="absolute bottom-4 right-4 bg-black/80 backdrop-blur text-white text-xs px-2 py-1 flex items-center gap-1">
+                            <i data-lucide="youtube" class="w-3 h-3"></i> Watch Doc
+                        </div>
+                    </div>
+                    <h3 class="font-serif text-2xl group-hover:underline decoration-1 underline-offset-4">Reformed Village: Kampung Markisa</h3>
+                    <p class="text-gray-400 mt-2 text-sm leading-relaxed">
+                        Interactive storytelling documenting the social rehabilitation landscape in narcotics-affected areas. A deep dive into policy, humanity, and recovery.
+                    </p>
+                    <div class="flex gap-4 mt-3">
+                         <object class="z-10">
+                            <a href="https://medium.com/@dandywardhana/reformed-village-kampung-markisa-bbe7d8255a7e" target="_blank" class="text-xs text-accent hover:text-white border-b border-transparent hover:border-white transition-colors">Read Essay</a>
+                         </object>
+                         <object class="z-10">
+                            <a href="https://medium.com/@dandywardhana/interactive-33c8efd93269" target="_blank" class="text-xs text-accent hover:text-white border-b border-transparent hover:border-white transition-colors">View Interactive</a>
+                         </object>
+                    </div>
+                </a>
+
+                <!-- Secondary Grid -->
+                <div class="grid gap-8 content-start">
+                    <!-- Isu Lingkungan -->
+                    <a href="https://www.youtube.com/watch?v=HvVFEa-J5ck&ab_channel=Greenesia" target="_blank" class="flex gap-4 group cursor-pointer items-start hover:translate-x-2 transition-transform duration-300">
+                        <div class="w-32 h-24 bg-noir-800 shrink-0 overflow-hidden border border-white/5 relative">
+                            <img src="isu_lingkungan.jpg" 
+                                 onerror="this.src='https://images.unsplash.com/photo-1557992260-ec58e38d363c?q=80&w=400&auto=format&fit=crop'"
+                                 class="w-full h-full object-cover grayscale opacity-60 group-hover:opacity-100 transition-opacity">
+                            <div class="absolute bottom-1 right-1 bg-black/50 p-1"><i data-lucide="play-circle" class="w-3 h-3 text-white"></i></div>
+                        </div>
+                        <div>
+                            <h4 class="font-serif text-lg group-hover:text-white transition-colors text-gray-200">Isu Lingkungan: Urgent vs. Sexy</h4>
+                            <p class="text-xs text-gray-500 uppercase mt-1 tracking-wider">Video Journalism</p>
+                            <p class="text-gray-400 text-sm mt-2 line-clamp-2">Analyzing environmental discourse in modern media coverage.</p>
+                        </div>
+                    </a>
+
+                    <!-- Anak Muda dan Politik (SWAPPED UP) -->
+                    <a href="https://www.youtube.com/watch?v=kON9CyiGjjI" target="_blank" class="flex gap-4 group cursor-pointer items-start hover:translate-x-2 transition-transform duration-300">
+                        <div class="w-32 h-24 bg-noir-800 shrink-0 overflow-hidden border border-white/5 relative">
+                            <img src="anak_mudapolitik.jpg" 
+                                 onerror="this.src='https://images.unsplash.com/photo-1573164713988-8665fc963095?q=80&w=400&auto=format&fit=crop'"
+                                 class="w-full h-full object-cover grayscale opacity-60 group-hover:opacity-100 transition-opacity">
+                            <div class="absolute bottom-1 right-1 bg-black/50 p-1"><i data-lucide="play-circle" class="w-3 h-3 text-white"></i></div>
+                        </div>
+                        <div>
+                            <h4 class="font-serif text-lg group-hover:text-white transition-colors text-gray-200">Anak Muda dan Politik</h4>
+                            <p class="text-xs text-gray-500 uppercase mt-1 tracking-wider">Political Commentary</p>
+                            <p class="text-gray-400 text-sm mt-2">Exploring youth engagement in contemporary politics.</p>
+                        </div>
+                    </a>
+
+                    <!-- Eyes of Impact (SWAPPED DOWN) -->
+                    <a href="https://www.youtube.com/watch?v=qR60Ut-5mJ0" target="_blank" class="flex gap-4 group cursor-pointer items-start hover:translate-x-2 transition-transform duration-300">
+                        <div class="w-32 h-24 bg-noir-800 shrink-0 overflow-hidden border border-white/5 relative">
+                            <img src="eyes_impact.jpg" 
+                                 onerror="this.src='https://images.unsplash.com/photo-1529101091760-61df6be5d187?q=80&w=400&auto=format&fit=crop'"
+                                 class="w-full h-full object-cover grayscale opacity-60 group-hover:opacity-100 transition-opacity">
+                            <div class="absolute bottom-1 right-1 bg-black/50 p-1"><i data-lucide="play-circle" class="w-3 h-3 text-white"></i></div>
+                        </div>
+                        <div>
+                            <h4 class="font-serif text-lg group-hover:text-white transition-colors text-gray-200">Eyes of Impact | UMN TV</h4>
+                            <p class="text-xs text-gray-500 uppercase mt-1 tracking-wider">Producer / Series</p>
+                            <p class="text-gray-400 text-sm mt-2 line-clamp-2">Program series highlighting student perspectives on campus issues.</p>
+                        </div>
+                    </a>
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section B: The Vuseanday Archives (Creative) -->
+    <section id="creative" class="py-24 bg-noir-800 border-y border-white/5 section-fade-in">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <p class="font-mono text-accent text-sm tracking-widest mb-2">THE VUSEANDAY ARCHIVES</p>
+                <h2 class="font-serif text-3xl md:text-5xl text-white mb-6">Fiction & Narrative</h2>
+                <p class="max-w-2xl mx-auto text-gray-400 font-light">
+                    Exploring the fragile line between fact and fiction. Specializing in tragic narratives and "sad boy" aesthetics.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-4 gap-6">
+                <!-- Card 1 -->
+                <a href="https://medium.com/@vuseanday/devils-tears-8baa0ece029d" target="_blank" class="tilt-card block p-8 border border-white/10 hover:border-white/30 hover:bg-noir-700 transition-all duration-300 group hover:-translate-y-1">
+                    <i data-lucide="book-open" class="text-gray-500 mb-6 group-hover:text-white transition-colors"></i>
+                    <h3 class="font-serif text-xl text-white mb-2">Devil's Tears</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed mb-4">
+                        A dog's final moments under the cruel sun, watched by a weeping devil who laments he cannot offer a better end.
+                    </p>
+                    <span class="text-xs text-gray-500 font-mono uppercase group-hover:text-white transition-colors">Read on Medium &rarr;</span>
+                </a>
+
+                <!-- Card 2 -->
+                <a href="https://medium.com/@vuseanday/manisku-dua-ratus-ribu-2950e0383b82" target="_blank" class="tilt-card block p-8 border border-white/10 hover:border-white/30 hover:bg-noir-700 transition-all duration-300 group hover:-translate-y-1">
+                    <i data-lucide="feather" class="text-gray-500 mb-6 group-hover:text-white transition-colors"></i>
+                    <h3 class="font-serif text-xl text-white mb-2">Manisku Dua Ratus Ribu</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed mb-4">
+                        A haunting portrait of transactional intimacy, trauma, and poverty, where prayers and identity fade behind city walls.
+                    </p>
+                    <span class="text-xs text-gray-500 font-mono uppercase group-hover:text-white transition-colors">Read on Medium &rarr;</span>
+                </a>
+
+                <!-- Card 3 -->
+                <a href="https://medium.com/@vuseanday/we-dont-lose-people-we-return-them-405d6c1f84af" target="_blank" class="tilt-card block p-8 border border-white/10 hover:border-white/30 hover:bg-noir-700 transition-all duration-300 group hover:-translate-y-1">
+                    <i data-lucide="file-text" class="text-gray-500 mb-6 group-hover:text-white transition-colors"></i>
+                    <h3 class="font-serif text-xl text-white mb-2">We Don't Lose People...</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed mb-4">
+                        A reflection on mortality and impermanence: we own nothing, not even people. We simply return them to the void.
+                    </p>
+                    <span class="text-xs text-gray-500 font-mono uppercase group-hover:text-white transition-colors">Read on Medium &rarr;</span>
+                </a>
+
+                <!-- Card 4 -->
+                 <a href="https://medium.com/@vuseanday/tv-show-bbb857f27d33" target="_blank" class="tilt-card block p-8 border border-white/10 hover:border-white/30 hover:bg-noir-700 transition-all duration-300 group hover:-translate-y-1">
+                    <i data-lucide="tv" class="text-gray-500 mb-6 group-hover:text-white transition-colors"></i>
+                    <h3 class="font-serif text-xl text-white mb-2">TV Show</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed mb-4">
+                        Life viewed as episodes watched by a silent television set, capturing intimate, mundane, and tearful memories.
+                    </p>
+                    <span class="text-xs text-gray-500 font-mono uppercase group-hover:text-white transition-colors">Read on Medium &rarr;</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section C: Interactive & Tech -->
+    <section id="interactive" class="py-24 bg-noir-900 section-fade-in">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="flex items-end gap-4 mb-12 border-b border-white/10 pb-4">
+                <h2 class="font-serif text-3xl md:text-4xl text-white">Interactive & Audio</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-12">
+                <!-- Game Dev: Cosmic Harvest -->
+                <div class="bg-noir-800 border border-white/10 p-1 group tilt-card-container">
+                    <div class="tilt-card aspect-video bg-black relative flex items-center justify-center overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60 z-10"></div>
+                        <img src="cosmic_harvest.jpg" 
+                             onerror="this.src='https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=800&auto=format&fit=crop'"
+                             class="w-full h-full object-cover opacity-50 grayscale group-hover:grayscale-0 transition-all duration-500">
+                        <div class="absolute bottom-6 left-6 z-20">
+                            <h3 class="font-serif text-2xl text-white mb-1">Cosmic Harvest</h3>
+                            <p class="text-sm text-gray-300">Browser-Based Game Development</p>
+                        </div>
+                        <a href="https://vuseanday.github.io/platformer/" target="_blank" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white text-black rounded-full p-4 opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 z-30">
+                            <i data-lucide="play" class="fill-current"></i>
+                        </a>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-gray-400 text-sm leading-relaxed mb-4">
+                            A browser game developed to explore interactive storytelling mechanics. Demonstrates proficiency in logic, user flow, and digital engagement.
+                        </p>
+                        <div class="flex gap-2">
+                            <span class="text-xs border border-white/20 px-2 py-1 text-gray-400">Phaser</span>
+                            <span class="text-xs border border-white/20 px-2 py-1 text-gray-400">JavaScript</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Audio -->
+                <div class="space-y-6">
+                    <h3 class="font-serif text-xl text-white border-l-2 border-white pl-4">Audio Features</h3>
+                    
+                    <!-- Audio Item 1: Astonishing Intermoda -->
+                    <div class="flex items-center gap-4 group hover:bg-white/5 p-2 rounded transition-colors duration-300">
+                        <div class="w-16 h-16 bg-gray-800 shrink-0 border border-white/5 overflow-hidden">
+                            <img src="astonishing_intermoda.jpg" 
+                                 onerror="this.parentNode.innerHTML='<i data-lucide=\'mic\' class=\'text-gray-500\'></i>'; lucide.createIcons();"
+                                 class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300">
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-white group-hover:text-gray-300 transition-colors">CETAR #9: The Astonishing Intermoda</h4>
+                            <p class="text-sm text-gray-500">Audio Documentary</p>
+                            <a href="https://open.noice.id/content/274e6167-79ba-4490-9a0f-026720d03982" target="_blank" class="text-xs text-gray-400 underline mt-1 block hover:text-white">Listen on Noice</a>
+                        </div>
+                    </div>
+
+                    <!-- Audio Item 2: Will You Be My Gwen -->
+                    <div class="flex items-center gap-4 group hover:bg-white/5 p-2 rounded transition-colors duration-300">
+                        <div class="w-16 h-16 bg-gray-800 shrink-0 border border-white/5 overflow-hidden">
+                            <img src="wybmg.jpg" 
+                                 onerror="this.parentNode.innerHTML='<i data-lucide=\'music\' class=\'text-gray-500\'></i>'; lucide.createIcons();"
+                                 class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300">
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-white group-hover:text-gray-300 transition-colors">Will You Be My Gwen</h4>
+                            <p class="text-sm text-gray-500">Featuring Raf Turisno</p>
+                            <a href="https://open.spotify.com/track/0T8JfsRjk0iG2lMNUUDln2?si=d2342adc37d24c1b" target="_blank" class="text-xs text-gray-400 underline mt-1 block hover:text-white">Listen on Spotify</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section: Digital Media & Content (NEW) -->
+    <section id="digital" class="py-24 bg-noir-800 border-t border-white/5 section-fade-in">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="flex items-end gap-4 mb-12">
+                <h2 class="font-serif text-3xl md:text-4xl text-white">Digital Media & Content</h2>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <!-- Bixfeeds -->
+                <a href="https://www.tiktok.com/@bixfeeds.id?lang=en" target="_blank" class="tilt-card group relative aspect-video bg-black overflow-hidden border border-white/10 hover:border-white/40 transition-all">
+                    <img src="bixfeeds.jpg" 
+                         onerror="this.src='https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=400&auto=format&fit=crop'"
+                         class="w-full h-full object-cover opacity-60 grayscale group-hover:grayscale-0 transition-all duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
+                    <div class="absolute bottom-4 left-4">
+                        <h4 class="font-bold text-white text-lg group-hover:translate-x-1 transition-transform">Bixfeeds</h4>
+                        <p class="text-xs text-gray-400 group-hover:translate-x-1 transition-transform delay-75">News & Media</p>
+                    </div>
+                    <div class="absolute top-4 right-4 bg-black/50 p-2 rounded-full"><i data-lucide="film" class="w-4 h-4 text-white"></i></div>
+                </a>
+
+                 <!-- Kepo-In -->
+                 <a href="https://www.tiktok.com/@kepoin.mp3" target="_blank" class="tilt-card group relative aspect-video bg-black overflow-hidden border border-white/10 hover:border-white/40 transition-all">
+                    <img src="kepoin.jpg" 
+                         onerror="this.src='https://images.unsplash.com/photo-1611605698389-ecd18ccd4386?q=80&w=400&auto=format&fit=crop'"
+                         class="w-full h-full object-cover opacity-60 grayscale group-hover:grayscale-0 transition-all duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
+                    <div class="absolute bottom-4 left-4">
+                        <h4 class="font-bold text-white text-lg group-hover:translate-x-1 transition-transform">Kepo-In</h4>
+                        <p class="text-xs text-gray-400 group-hover:translate-x-1 transition-transform delay-75">Content Creator</p>
+                    </div>
+                    <div class="absolute top-4 right-4 bg-black/50 p-2 rounded-full"><i data-lucide="music-2" class="w-4 h-4 text-white"></i></div>
+                </a>
+
+                 <!-- HaCing -->
+                 <a href="https://www.tiktok.com/@hhacing?lang=en" target="_blank" class="tilt-card group relative aspect-video bg-black overflow-hidden border border-white/10 hover:border-white/40 transition-all">
+                    <img src="hacing.jpg" 
+                         onerror="this.src='https://images.unsplash.com/photo-1516280440614-6697288d5d38?q=80&w=400&auto=format&fit=crop'"
+                         class="w-full h-full object-cover opacity-60 grayscale group-hover:grayscale-0 transition-all duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
+                    <div class="absolute bottom-4 left-4">
+                        <h4 class="font-bold text-white text-lg group-hover:translate-x-1 transition-transform">HaCing</h4>
+                        <p class="text-xs text-gray-400 group-hover:translate-x-1 transition-transform delay-75">Creative Content</p>
+                    </div>
+                    <div class="absolute top-4 right-4 bg-black/50 p-2 rounded-full"><i data-lucide="smile" class="w-4 h-4 text-white"></i></div>
+                </a>
+
+                <!-- Pocky Launch -->
+                <a href="https://www.instagram.com/reel/C8q3kOFyQti/?igsh=M2U5eTRmZzRkOXVq" target="_blank" class="tilt-card group relative aspect-video bg-black overflow-hidden border border-white/10 hover:border-white/40 transition-all">
+                    <img src="pocky.jpg" 
+                         onerror="this.src='https://images.unsplash.com/photo-1541532713592-796d394b9e4f?q=80&w=400&auto=format&fit=crop'"
+                         class="w-full h-full object-cover opacity-60 grayscale group-hover:grayscale-0 transition-all duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
+                    <div class="absolute bottom-4 left-4">
+                        <h4 class="font-bold text-white text-lg group-hover:translate-x-1 transition-transform">Pocky Event</h4>
+                        <p class="text-xs text-gray-400 group-hover:translate-x-1 transition-transform delay-75">Event Coverage</p>
+                    </div>
+                    <div class="absolute top-4 right-4 bg-black/50 p-2 rounded-full"><i data-lucide="instagram" class="w-4 h-4 text-white"></i></div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section D: Organization & Leadership -->
+    <section id="organization" class="py-24 bg-noir-900 border-t border-white/5 section-fade-in">
+        <div class="max-w-4xl mx-auto px-6">
+            <h2 class="font-serif text-3xl text-center text-white mb-12">Experience & Organization</h2>
+            
+            <div class="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-gray-700 before:to-transparent">
+                
+                <!-- Timeline Item: Tirto.id -->
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-noir-900 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 group-hover:scale-110 transition-transform">
+                        <i data-lucide="pen-tool" class="w-4 h-4 text-white"></i>
+                    </div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 border border-white/10 bg-noir-800 hover:border-white/30 transition-colors">
+                        <div class="flex items-center justify-between space-x-2 mb-1">
+                            <div class="font-bold text-white"><a href="https://tirto.id" target="_blank" class="hover:underline">Tirto.id</a></div>
+                            <time class="font-mono text-xs text-gray-500">Sept 2024 - Jan 2025</time>
+                        </div>
+                        <div class="text-sm text-accent mb-2">Journalist / Contributor</div>
+                        <p class="text-gray-400 text-xs leading-snug">
+                            Produced news articles and features for one of Indonesia's leading online media platforms.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Timeline Item: Bixfeeds -->
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border border-gray-600 bg-noir-900 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 group-hover:scale-110 transition-transform">
+                        <i data-lucide="share-2" class="w-4 h-4 text-gray-400"></i>
+                    </div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 border border-white/10 bg-noir-800 hover:border-white/30 transition-colors">
+                        <div class="flex items-center justify-between space-x-2 mb-1">
+                            <div class="font-bold text-white"><a href="https://www.tiktok.com/@bixfeeds.id?lang=en" target="_blank" class="hover:underline">Bixfeeds</a></div>
+                            <time class="font-mono text-xs text-gray-500">Mar 2024 - Aug 2024</time>
+                        </div>
+                        <div class="text-sm text-accent mb-2">Content Creator</div>
+                        <p class="text-gray-400 text-xs leading-snug">
+                            Developed engaging short-form video content and social media strategies for youth-oriented news.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Timeline Item: Event Coordinator -->
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border border-gray-600 bg-noir-900 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 group-hover:scale-110 transition-transform">
+                        <i data-lucide="users" class="w-4 h-4 text-gray-400"></i>
+                    </div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 border border-white/10 bg-noir-800 hover:border-white/30 transition-colors">
+                        <div class="flex items-center justify-between space-x-2 mb-1">
+                            <div class="font-bold text-white">Event Coordinator</div>
+                            <time class="font-mono text-xs text-gray-500">Nov 2023</time>
+                        </div>
+                        <div class="text-sm text-accent mb-2">Communication Festival 2023</div>
+                        <p class="text-gray-400 text-xs leading-snug">
+                            Managed the "Communicating Across Cultures" talkshow. <a href="https://www.instagram.com/p/CyZ3d5pLsuT/?igsh=b2p2am9seml0czd4" target="_blank" class="text-white hover:underline">View Post &rarr;</a>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Timeline Item: PIC -->
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border border-gray-600 bg-noir-900 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 group-hover:scale-110 transition-transform">
+                        <i data-lucide="flag" class="w-4 h-4 text-gray-400"></i>
+                    </div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 border border-white/10 bg-noir-800 hover:border-white/30 transition-colors">
+                        <div class="flex items-center justify-between space-x-2 mb-1">
+                            <div class="font-bold text-white">Person In Charge (PIC)</div>
+                            <time class="font-mono text-xs text-gray-500">Aug 2023</time>
+                        </div>
+                        <div class="text-sm text-accent mb-2">Perkenalan Fakultas Ilmu Komunikasi</div>
+                        <p class="text-gray-400 text-xs leading-snug">
+                            Led student introduction program. <a href="https://www.instagram.com/reel/CxFFAE2L5KN/?igsh=MThoMjkwZHM4aGlrYw==" target="_blank" class="text-white hover:underline">View Recap &rarr;</a>
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Section: Contact Form (New) -->
+    <section id="contact" class="py-24 bg-noir-800 border-t border-white/5 section-fade-in">
+         <div class="max-w-xl mx-auto px-6 text-center">
+             <h2 class="font-serif text-3xl text-white mb-8">Get in Touch</h2>
+             <form action="https://formspree.io/f/xojaoeze" method="POST" class="space-y-4 text-left">
+                 <div>
+                     <label class="block text-xs text-gray-500 uppercase tracking-widest mb-2">Your Email</label>
+                     <input type="email" name="email" required class="w-full bg-noir-900 border border-white/10 p-3 text-white focus:border-white transition-colors outline-none hover:border-white/40 focus:border-white">
+                 </div>
+                 <div>
+                     <label class="block text-xs text-gray-500 uppercase tracking-widest mb-2">Message</label>
+                     <textarea name="message" rows="4" required class="w-full bg-noir-900 border border-white/10 p-3 text-white focus:border-white transition-colors outline-none hover:border-white/40 focus:border-white"></textarea>
+                 </div>
+                 <button type="submit" class="w-full bg-white text-black font-medium py-3 hover:bg-gray-200 transition-colors transform active:scale-95">SEND MESSAGE</button>
+             </form>
+             <p class="mt-8 text-gray-500 text-sm">
+                 Prefer email? <a href="mailto:vuseanday@gmail.com" class="text-white underline hover:text-gray-300">vuseanday@gmail.com</a>
+             </p>
+         </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black text-white py-12 border-t border-white/10 section-fade-in">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <h2 class="font-serif text-2xl mb-6">Let's tell a story together.</h2>
+            <div class="flex justify-center gap-6 mb-8">
+                <a href="https://medium.com/@vuseanday" class="text-gray-400 hover:text-white transition-colors hover:scale-110 transform duration-200"><i data-lucide="book-open"></i></a>
+                <a href="https://www.linkedin.com/in/aldandi-gowawardhana-05bb45280/" class="text-gray-400 hover:text-white transition-colors hover:scale-110 transform duration-200"><i data-lucide="linkedin"></i></a>
+                <a href="mailto:vuseanday@gmail.com" class="text-gray-400 hover:text-white transition-colors hover:scale-110 transform duration-200"><i data-lucide="mail"></i></a>
+            </div>
+            <p class="text-gray-600 text-xs font-mono">
+                © 2025 Aldandi Gowawardhana. All rights reserved. <br>
+                Designed by Vuseanday Services.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="fixed bottom-24 right-8 z-40 bg-noir-800 border border-white/20 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-white hover:text-black transition-all shadow-lg group">
+        <i data-lucide="arrow-up" class="w-5 h-5"></i>
+    </button>
+
+    <!-- Floating Action Button for Services -->
+    <a href="https://vuseanday.github.io" class="fixed bottom-8 right-8 z-50 group">
+        <div class="absolute bottom-full right-0 mb-3 w-48 bg-white text-black text-xs p-3 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none shadow-lg text-right">
+            Need creative solutions? <br><strong>Hire Vuseanday Services.</strong>
+        </div>
+        <div class="bg-white text-black w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:bg-gray-200 transition-all duration-300 hover:scale-110">
+            <i data-lucide="briefcase" class="w-6 h-6"></i>
+        </div>
+    </a>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Smooth Scroll handling for anchor links with offset
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                
+                // Add this check to prevent errors with links that are just "#"
+                if (targetId === '#' || targetId === '') return;
+
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    // Calculate offset for fixed navbar
+                    const headerOffset = 80;
+                    const elementPosition = targetElement.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                    
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Intersection Observer for Fade-In Animation
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    // Stop observing once visible to animate only once (optional)
+                    // observer.unobserve(entry.target); 
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.section-fade-in').forEach(section => {
+            observer.observe(section);
+        });
+
+
+        // Eyeball Interaction
+        const eye = document.getElementById('eye');
+        const pupil = document.getElementById('pupil');
+        const iris = document.getElementById('iris');
+        const eyelid = document.getElementById('eyelid');
+
+        // Track Mouse
+        document.addEventListener('mousemove', (e) => {
+            if (!eye) return;
+            const rect = eye.getBoundingClientRect();
+            const eyeX = rect.left + rect.width / 2;
+            const eyeY = rect.top + rect.height / 2;
+            
+            // Calculate angle and limited distance
+            const angle = Math.atan2(e.clientY - eyeY, e.clientX - eyeX);
+            const distance = Math.min(3, Math.hypot(e.clientX - eyeX, e.clientY - eyeY) / 10); // slightly increased movement range
+            
+            const irisX = Math.cos(angle) * distance;
+            const irisY = Math.sin(angle) * distance;
+            
+            // Move Iris
+            iris.style.transform = `translate(${irisX}px, ${irisY}px)`;
+            
+            // Slight Pupil movement relative to iris for depth effect
+            const pupilX = Math.cos(angle) * (distance * 0.3); 
+            const pupilY = Math.sin(angle) * (distance * 0.3);
+            
+            pupil.style.transform = `translate(${pupilX}px, ${pupilY}px)`;
+        });
+
+        // Random Blinking
+        function blink() {
+            if (!eyelid) return;
+            eyelid.style.height = '100%';
+            setTimeout(() => {
+                eyelid.style.height = '0%';
+            }, 150);
+            
+            // Blink randomly between 2 and 6 seconds
+            setTimeout(blink, Math.random() * 4000 + 2000);
+        }
+        
+        // Start blinking loop
+        blink();
+
+        // Typewriter Effect
+        const roles = [
+            "Multimedia Journalist",
+            "Creative Writer",
+            "Songwriter",
+            "Singer",
+            "Designer",
+            "Video Editor",
+            "Photoshop Enthusiast",
+            "Jack of All Trades"
+        ];
+        
+        const typewriterElement = document.getElementById('typewriter-text');
+        let roleIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        let typewriterDelay = 100;
+
+        function type() {
+            const currentRole = roles[roleIndex];
+            
+            if (isDeleting) {
+                typewriterElement.textContent = currentRole.substring(0, charIndex - 1);
+                charIndex--;
+                typewriterDelay = 50; // Faster deleting speed
+            } else {
+                typewriterElement.textContent = currentRole.substring(0, charIndex + 1);
+                charIndex++;
+                typewriterDelay = 100; // Normal typing speed
+            }
+
+            if (!isDeleting && charIndex === currentRole.length) {
+                isDeleting = true;
+                typewriterDelay = 2000; // Pause at end of word
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                roleIndex = (roleIndex + 1) % roles.length;
+                typewriterDelay = 500; // Pause before typing next word
+            }
+
+            setTimeout(type, typewriterDelay);
+        }
+
+        // Start typewriter on load
+        document.addEventListener('DOMContentLoaded', type);
+
+        // Scroll Progress Bar Logic
+        window.addEventListener('scroll', () => {
+            const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (scrollTop / scrollHeight) * 100;
+            document.getElementById('scroll-progress').style.width = scrolled + "%";
+
+            // Back to Top Button Visibility
+            const backToTopBtn = document.getElementById('back-to-top');
+            if (scrollTop > 500) {
+                backToTopBtn.classList.add('visible');
+            } else {
+                backToTopBtn.classList.remove('visible');
+            }
+        });
+
+        // 3D Tilt Effect Logic
+        document.querySelectorAll('.tilt-card, .tilt-card-container').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = ((y - centerY) / centerY) * -5; // Max rotation deg
+                const rotateY = ((x - centerX) / centerX) * 5;
+
+                // Apply the transform to the card itself or specific child if container
+                const target = card.classList.contains('tilt-card') ? card : card.querySelector('.tilt-card');
+                if(target) {
+                    target.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+                }
+            });
+
+            card.addEventListener('mouseleave', () => {
+                const target = card.classList.contains('tilt-card') ? card : card.querySelector('.tilt-card');
+                if(target) {
+                    target.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
