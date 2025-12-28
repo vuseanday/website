@@ -221,11 +221,11 @@
             padding: 2rem;
         }
 
-        /* Interactive Card Stack Styles (5 Items) */
+        /* Interactive Card Stack Styles (5 Items) - Portrait */
         .card-stack {
             position: relative;
             width: 100%;
-            height: 400px; 
+            height: 500px; /* Increased height for portrait */
             perspective: 1000px;
             cursor: pointer;
         }
@@ -245,22 +245,22 @@
         
         /* Stack Hierachy */
         .stack-item:nth-child(1) { z-index: 5; transform: translateY(0) scale(1); opacity: 1; }
-        .stack-item:nth-child(2) { z-index: 4; transform: translateY(-10px) scale(0.97); opacity: 0.8; }
-        .stack-item:nth-child(3) { z-index: 3; transform: translateY(-20px) scale(0.94); opacity: 0.6; }
-        .stack-item:nth-child(4) { z-index: 2; transform: translateY(-30px) scale(0.91); opacity: 0.4; }
-        .stack-item:nth-child(5) { z-index: 1; transform: translateY(-40px) scale(0.88); opacity: 0.2; }
+        .stack-item:nth-child(2) { z-index: 4; transform: translateY(-15px) scale(0.97); opacity: 0.8; }
+        .stack-item:nth-child(3) { z-index: 3; transform: translateY(-30px) scale(0.94); opacity: 0.6; }
+        .stack-item:nth-child(4) { z-index: 2; transform: translateY(-45px) scale(0.91); opacity: 0.4; }
+        .stack-item:nth-child(5) { z-index: 1; transform: translateY(-60px) scale(0.88); opacity: 0.2; }
         
         /* Hide others */
         .stack-item:nth-child(n+6) {
             z-index: 0;
-            transform: translateY(-50px) scale(0.85);
+            transform: translateY(-75px) scale(0.85);
             opacity: 0;
             pointer-events: none;
         }
 
         /* Hover effect for the whole stack */
         .card-stack:hover .stack-item:nth-child(1) {
-            transform: translateY(-5px);
+            transform: translateY(-8px);
             border-color: rgba(255, 255, 255, 0.4);
         }
     </style>
@@ -1125,7 +1125,7 @@
                     clearInterval(interval);
                 }
                 
-                iterations += 5; // Increased speed for faster decoding
+                iterations += 2.5; // Adjusted speed
             }, 30);
         }
 
