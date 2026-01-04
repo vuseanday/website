@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aldandi Gowawardhana | Multimedia Journalist</title>
     
-    <!-- Favicon (The Eye) - Base64 Encoded for Reliability -->
+    <!-- Favicon (The Eye) -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0OCIgZmlsbD0iI2YwZjBmMCIgc3Ryb2tlPSIjOWNhM2FmIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNMTAsNTAgUTMwLDQ1IDQwLDUwIiBzdHJva2U9InJnYmEoMjIwLCAzOCwgMzgsIDAuNikiIHN0cm9rZS13aWR0aD0iMyIgZmlsbD0ibm9uZSIvPjxwYXRoIGQ9Ik05MCw1MCBRNzAsNTUgNjAsNTAiIHN0cm9rZT0icmdiYSgyMjAsIDM4LCAzOCwgMC42KSIgc3Ryb2tlLXdpZHRoPSIzIiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTUwLDEwIFE1NSwzMCA1MCw0MCIgc3Ryb2tlPSJyZ2JhKDIyMCwgMzgsIDM4LCAwLjYpIiBzdHJva2Utd2lkdGg9IjMiIGZpbGw9Im5vbmUiLz48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIyMCIgZmlsbD0iI2I5MWMxYyIgc3Ryb2tlPSIjN2YxZDFkIiBzdHJva2Utd2lkdGg9IjEiLz48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIxMCIgZmlsbD0iYmxhY2siLz48Y2lyY2xlIGN4PSI1NSIgY3k9IjQ1IiByPSIzIiBmaWxsPSJ3aGl0ZSIgb3BhY2l0eT0iMC42Ii8+PC9zdmc+">
 
     <!-- Fonts -->
@@ -36,53 +36,11 @@
                         },
                         accent: '#a3a3a3', // Muted silver for sleekness
                     },
-                    cursor: {
-                        none: 'none',
-                    }
                 }
             }
         }
     </script>
     <style>
-        /* Hide Default Cursor */
-        body {
-            cursor: none;
-        }
-        
-        /* Custom Cursor */
-        #custom-cursor {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 20px;
-            height: 20px;
-            border: 1px solid white;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 9999;
-            transform: translate(-50%, -50%);
-            transition: width 0.3s, height 0.3s, background-color 0.3s;
-            mix-blend-mode: difference;
-        }
-        #custom-cursor.hovered {
-            width: 50px;
-            height: 50px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-color: transparent;
-        }
-
-        /* Flashlight Effect */
-        #flashlight {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 40; /* Below content but above background */
-            background: radial-gradient(circle 600px at var(--x, 50%) var(--y, 50%), rgba(255,255,255,0.03) 0%, transparent 100%);
-        }
-
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
@@ -266,12 +224,6 @@
     </style>
 </head>
 <body class="bg-noir-900 text-noir-100 antialiased selection:bg-white selection:text-black">
-
-    <!-- Feature 1: Custom Cursor -->
-    <div id="custom-cursor"></div>
-
-    <!-- Feature 2: Flashlight/Spotlight Overlay -->
-    <div id="flashlight"></div>
 
     <!-- Scroll Progress Bar -->
     <div id="scroll-progress"></div>
@@ -1069,25 +1021,6 @@
             });
         });
 
-        // Feature 1: Custom Cursor Logic
-        const cursor = document.getElementById('custom-cursor');
-        document.addEventListener('mousemove', (e) => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
-        });
-
-        document.querySelectorAll('.hover-trigger, a, button').forEach(el => {
-            el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
-            el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
-        });
-
-        // Feature 2: Flashlight Effect Logic
-        const flashlight = document.getElementById('flashlight');
-        document.addEventListener('mousemove', (e) => {
-            flashlight.style.setProperty('--x', e.clientX + 'px');
-            flashlight.style.setProperty('--y', e.clientY + 'px');
-        });
-
         // Feature 3: Magnetic Buttons Logic
         const magneticBtns = document.querySelectorAll('.magnetic-btn');
         magneticBtns.forEach(btn => {
@@ -1125,7 +1058,7 @@
                     clearInterval(interval);
                 }
                 
-                iterations += 2.5; // Adjusted speed
+                iterations += 2.5; // Adjusted speed as requested
             }, 30);
         }
 
