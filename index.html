@@ -41,6 +41,20 @@
         }
     </script>
     <style>
+        /* Flashlight Effect - Hidden on Mobile to save battery/performance */
+        @media (min-width: 768px) {
+            #flashlight {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                z-index: 40;
+                background: radial-gradient(circle 600px at var(--x, 50%) var(--y, 50%), rgba(255,255,255,0.03) 0%, transparent 100%);
+            }
+        }
+
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
@@ -56,7 +70,7 @@
             background: #525252; 
         }
         
-        /* Smooth Fade In Animation for Sections */
+        /* Smooth Fade In Animation */
         .section-fade-in {
             opacity: 0;
             transform: translateY(20px);
@@ -82,16 +96,15 @@
         /* Realistic Eye Details */
         #eye {
             box-shadow: inset 0 0 4px rgba(0,0,0,0.4);
-            background: radial-gradient(circle at 30% 30%, #fff0f0 10%, #ffe0e0 80%, #ffcccc 100%); /* Reddish tint to sclera */
+            background: radial-gradient(circle at 30% 30%, #fff0f0 10%, #ffe0e0 80%, #ffcccc 100%);
         }
         #iris {
-            background: radial-gradient(circle, #ef4444 0%, #b91c1c 70%, #7f1d1d 100%); /* Red iris */
+            background: radial-gradient(circle, #ef4444 0%, #b91c1c 70%, #7f1d1d 100%);
             border: 1px solid #7f1d1d;
         }
-        /* Red Veins in Eye */
         .vein {
             position: absolute;
-            background: rgba(220, 38, 38, 0.6); /* More visible red */
+            background: rgba(220, 38, 38, 0.6);
             height: 1px;
             pointer-events: none;
         }
@@ -118,16 +131,18 @@
             top: 0;
             left: 0;
             height: 3px;
-            background: linear-gradient(to right, #b91c1c, #ef4444); /* Red gradient matching eye */
+            background: linear-gradient(to right, #b91c1c, #ef4444);
             z-index: 100;
             width: 0%;
             transition: width 0.1s;
         }
 
-        /* 3D Tilt Effect */
-        .tilt-card {
-            transition: transform 0.1s ease-out;
-            transform-style: preserve-3d;
+        /* 3D Tilt Effect - Desktop Only */
+        @media (min-width: 768px) {
+            .tilt-card {
+                transition: transform 0.1s ease-out;
+                transform-style: preserve-3d;
+            }
         }
         
         /* Back to Top Button */
@@ -143,7 +158,7 @@
             transform: translateY(0);
         }
 
-        /* Book Flip Styles - Fixed Overflow */
+        /* Book Flip Styles */
         .book-container {
             perspective: 1000px;
             cursor: pointer;
@@ -166,11 +181,11 @@
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
             border-radius: 4px;
-            overflow: hidden; /* Ensures content stays inside */
+            overflow: hidden;
         }
         .book-back {
             transform: rotateY(180deg);
-            background-color: #171717; /* noir-800 */
+            background-color: #171717;
             border: 1px solid rgba(255,255,255,0.1);
             display: flex;
             flex-direction: column;
@@ -179,14 +194,22 @@
             padding: 2rem;
         }
 
-        /* Interactive Card Stack Styles (5 Items) - Portrait */
+        /* Interactive Card Stack Styles */
         .card-stack {
             position: relative;
             width: 100%;
-            height: 500px; /* Increased height for portrait */
+            height: 450px; /* Adjusted for portrait items */
             perspective: 1000px;
             cursor: pointer;
+            margin-bottom: 2rem; /* Add margin for mobile layout */
         }
+        @media (min-width: 768px) {
+             .card-stack {
+                 height: 500px;
+                 margin-bottom: 0;
+             }
+        }
+
         .stack-item {
             position: absolute;
             top: 0;
@@ -201,14 +224,12 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
         
-        /* Stack Hierachy */
         .stack-item:nth-child(1) { z-index: 5; transform: translateY(0) scale(1); opacity: 1; }
         .stack-item:nth-child(2) { z-index: 4; transform: translateY(-15px) scale(0.97); opacity: 0.8; }
         .stack-item:nth-child(3) { z-index: 3; transform: translateY(-30px) scale(0.94); opacity: 0.6; }
         .stack-item:nth-child(4) { z-index: 2; transform: translateY(-45px) scale(0.91); opacity: 0.4; }
         .stack-item:nth-child(5) { z-index: 1; transform: translateY(-60px) scale(0.88); opacity: 0.2; }
         
-        /* Hide others */
         .stack-item:nth-child(n+6) {
             z-index: 0;
             transform: translateY(-75px) scale(0.85);
@@ -216,7 +237,6 @@
             pointer-events: none;
         }
 
-        /* Hover effect for the whole stack */
         .card-stack:hover .stack-item:nth-child(1) {
             transform: translateY(-8px);
             border-color: rgba(255, 255, 255, 0.4);
@@ -225,54 +245,60 @@
 </head>
 <body class="bg-noir-900 text-noir-100 antialiased selection:bg-white selection:text-black">
 
+    <!-- Feature 2: Flashlight/Spotlight Overlay (Desktop Only) -->
+    <div id="flashlight"></div>
+
     <!-- Scroll Progress Bar -->
     <div id="scroll-progress"></div>
 
-    <!-- Grain Effect Overlay for "Film Noir" feel -->
+    <!-- Grain Effect Overlay -->
     <div class="grain-overlay"></div>
 
     <!-- Navigation -->
-    <nav class="fixed w-full z-40 bg-noir-900/90 backdrop-blur-sm border-b border-white/10 transition-all duration-300" id="navbar">
+    <nav class="fixed w-full z-40 bg-noir-900/95 backdrop-blur-md border-b border-white/10 transition-all duration-300" id="navbar">
         <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="#" class="font-serif font-bold text-xl tracking-wider flex items-center gap-3 group hover-trigger">
+            <a href="#" class="font-serif font-bold text-xl tracking-wider flex items-center gap-3 group">
                 Vuseanday
                 <!-- Interactive Eyeball -->
-                <div id="eye" class="relative w-6 h-6 bg-white rounded-full overflow-hidden border border-gray-400 flex items-center justify-center shadow-inner">
-                    <!-- Red Veins -->
+                <div id="eye" class="relative w-6 h-6 bg-white rounded-full overflow-hidden border border-gray-400 flex items-center justify-center shadow-inner shrink-0">
                     <div class="vein w-3 top-2 left-0 rotate-12 opacity-80"></div>
                     <div class="vein w-2 bottom-1 right-0 -rotate-12 opacity-80"></div>
                     <div class="vein w-2 top-1 right-1 rotate-45 opacity-60"></div>
                     
                     <div id="iris" class="w-3 h-3 rounded-full relative flex items-center justify-center overflow-hidden">
                         <div id="pupil" class="w-1.5 h-1.5 bg-black rounded-full"></div>
-                        <div class="absolute top-0.5 right-0.5 w-0.5 h-0.5 bg-white rounded-full opacity-60"></div> <!-- Reflection -->
+                        <div class="absolute top-0.5 right-0.5 w-0.5 h-0.5 bg-white rounded-full opacity-60"></div>
                     </div>
                     <div id="eyelid" class="absolute top-0 left-0 w-full bg-noir-900 z-10 transition-all duration-75 border-b border-red-900/30" style="height: 0%;"></div>
                 </div>
             </a>
+            
+            <!-- Desktop Menu -->
             <div class="hidden md:flex space-x-6 text-sm font-light tracking-wide text-gray-400">
-                <a href="#journalism" class="nav-link hover:text-white transition-all duration-300 hover:tracking-widest hover-trigger">Journalism</a>
-                <a href="#creative" class="nav-link hover:text-white transition-all duration-300 hover:tracking-widest hover-trigger">Creative</a>
-                <a href="#books" class="nav-link hover:text-white transition-all duration-300 hover:tracking-widest hover-trigger">Books</a>
-                <a href="#interactive" class="nav-link hover:text-white transition-all duration-300 hover:tracking-widest hover-trigger">Interactive</a>
-                <a href="#digital" class="nav-link hover:text-white transition-all duration-300 hover:tracking-widest hover-trigger">Digital</a>
-                <a href="#diy" class="nav-link hover:text-white transition-all duration-300 hover:tracking-widest hover-trigger">Store</a>
-                <a href="#organization" class="nav-link hover:text-white transition-all duration-300 hover:tracking-widest hover-trigger">Experience</a>
+                <a href="#journalism" class="nav-link hover:text-white transition-all duration-300 hover:tracking-widest">Journalism</a>
+                <a href="#creative" class="nav-link hover:text-white transition-all duration-300 hover:tracking-widest">Creative</a>
+                <a href="#books" class="nav-link hover:text-white transition-all duration-300 hover:tracking-widest">Books</a>
+                <a href="#interactive" class="nav-link hover:text-white transition-all duration-300 hover:tracking-widest">Interactive</a>
+                <a href="#digital" class="nav-link hover:text-white transition-all duration-300 hover:tracking-widest">Digital</a>
+                <a href="#diy" class="nav-link hover:text-white transition-all duration-300 hover:tracking-widest">Store</a>
+                <a href="#organization" class="nav-link hover:text-white transition-all duration-300 hover:tracking-widest">Experience</a>
             </div>
+            
             <!-- Mobile Menu Icon -->
-            <button class="md:hidden text-white hover-trigger" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+            <button class="md:hidden text-white p-2" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
                 <i data-lucide="menu"></i>
             </button>
         </div>
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-noir-800 border-b border-white/10 p-4 space-y-4 text-center">
-            <a href="#journalism" class="block text-gray-400 hover:text-white">Journalism</a>
-            <a href="#creative" class="block text-gray-400 hover:text-white">Creative</a>
-            <a href="#books" class="block text-gray-400 hover:text-white">Books</a>
-            <a href="#interactive" class="block text-gray-400 hover:text-white">Interactive</a>
-            <a href="#digital" class="block text-gray-400 hover:text-white">Digital</a>
-            <a href="#diy" class="block text-gray-400 hover:text-white">Store</a>
-            <a href="#organization" class="block text-gray-400 hover:text-white">Experience</a>
+        
+        <!-- Mobile Menu (Solid background for better visibility) -->
+        <div id="mobile-menu" class="hidden md:hidden bg-noir-900 border-b border-white/10 p-6 space-y-6 text-center shadow-2xl absolute w-full top-full left-0 z-50">
+            <a href="#journalism" class="block text-gray-400 hover:text-white text-lg" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Journalism</a>
+            <a href="#creative" class="block text-gray-400 hover:text-white text-lg" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Creative</a>
+            <a href="#books" class="block text-gray-400 hover:text-white text-lg" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Books</a>
+            <a href="#interactive" class="block text-gray-400 hover:text-white text-lg" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Interactive</a>
+            <a href="#digital" class="block text-gray-400 hover:text-white text-lg" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Digital</a>
+            <a href="#diy" class="block text-gray-400 hover:text-white text-lg" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Store</a>
+            <a href="#organization" class="block text-gray-400 hover:text-white text-lg" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Experience</a>
         </div>
     </nav>
 
@@ -280,7 +306,7 @@
     <header class="relative min-h-screen flex items-center justify-center pt-20 section-fade-in is-visible">
         <div class="max-w-4xl mx-auto px-6 text-center">
             <!-- Profile Image -->
-            <div class="w-32 h-32 md:w-48 md:h-48 mx-auto mb-8 rounded-full overflow-hidden border-2 border-white/20 relative group hover:border-white/60 transition-colors duration-500 hover-trigger">
+            <div class="w-32 h-32 md:w-48 md:h-48 mx-auto mb-8 rounded-full overflow-hidden border-2 border-white/20 relative group hover:border-white/60 transition-colors duration-500">
                 <img src="profile.jpg" 
                      onerror="this.src='https://images.unsplash.com/photo-1511367461989-f85a21fda167?q=80&w=1331&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'"
                      alt="Aldandi Gowawardhana" 
@@ -288,10 +314,10 @@
                      style="object-position: 50% 35%; transform: scale(1.3);">
             </div>
 
-            <h1 class="font-serif text-4xl md:text-6xl font-bold mb-4 tracking-tight leading-tight hover-trigger">
+            <h1 class="font-serif text-4xl md:text-6xl font-bold mb-4 tracking-tight leading-tight">
                 Aldandi Gowawardhana
             </h1>
-            <h2 class="text-xl md:text-2xl text-gray-400 font-light mb-8 font-serif italic h-8 flex items-center justify-center">
+            <h2 class="text-xl md:text-2xl text-gray-400 font-light mb-8 font-serif italic h-8 flex items-center justify-center text-center">
                 <span id="typewriter-text"></span><span class="typewriter-cursor"></span>
             </h2>
             
@@ -301,33 +327,31 @@
                     Merging investigative rigor with creative narrative.
                 </p>
                 <div class="flex flex-col md:flex-row justify-center items-center gap-3 text-sm text-gray-500 font-mono">
-                    <span class="flex items-center gap-2 hover:text-white transition-colors hover-trigger"><i data-lucide="map-pin" class="w-4 h-4"></i> Final-Year at UMN</span>
+                    <span class="flex items-center gap-2 hover:text-white transition-colors"><i data-lucide="map-pin" class="w-4 h-4"></i> Final-Year at UMN</span>
                     <span class="hidden md:inline">•</span>
-                    <span class="flex items-center gap-2 hover:text-white transition-colors hover-trigger"><i data-lucide="pen-tool" class="w-4 h-4"></i> Writing "Dream Girl"</span>
+                    <span class="flex items-center gap-2 hover:text-white transition-colors"><i data-lucide="pen-tool" class="w-4 h-4"></i> Writing "Dream Girl"</span>
                     <span class="hidden md:inline">•</span>
-                    <span class="flex items-center gap-2 hover:text-white transition-colors hover-trigger"><i data-lucide="code" class="w-4 h-4"></i> Creator of Cosmic Harvest</span>
+                    <span class="flex items-center gap-2 hover:text-white transition-colors"><i data-lucide="code" class="w-4 h-4"></i> Creator of Cosmic Harvest</span>
                 </div>
             </div>
 
-            <!-- Feature 3: Magnetic Buttons -->
             <div class="mt-12 flex justify-center gap-4">
-                <a href="#journalism" class="magnetic-btn border border-white/30 px-6 py-3 text-sm tracking-widest hover:bg-white hover:text-black transition-all duration-300 hover-trigger">VIEW WORK</a>
-                <a href="#contact" class="magnetic-btn bg-white text-black px-6 py-3 text-sm tracking-widest font-medium hover:bg-gray-200 transition-all duration-300 hover-trigger">CONTACT</a>
+                <a href="#journalism" class="magnetic-btn border border-white/30 px-6 py-3 text-sm tracking-widest hover:bg-white hover:text-black transition-all duration-300">VIEW WORK</a>
+                <a href="#contact" class="magnetic-btn bg-white text-black px-6 py-3 text-sm tracking-widest font-medium hover:bg-gray-200 transition-all duration-300">CONTACT</a>
             </div>
         </div>
     </header>
 
     <!-- Section A: Investigative & Social Impact (Journalism) -->
-    <section id="journalism" class="py-24 bg-noir-900 relative section-fade-in">
+    <section id="journalism" class="py-12 md:py-24 bg-noir-900 relative section-fade-in">
         <div class="max-w-6xl mx-auto px-6">
             <div class="flex items-end gap-4 mb-12 border-b border-white/10 pb-4">
-                <!-- Feature 4: Scramble Text Effect on Scroll -->
                 <h2 class="font-serif text-3xl md:text-4xl text-white scramble-text" data-original="Investigative & Impact">Investigative & Impact</h2>
             </div>
 
             <div class="grid md:grid-cols-2 gap-8">
-                <!-- Main Feature: Reformed Village -->
-                <a href="https://youtu.be/rVMGM0fdrAo" target="_blank" class="block group cursor-pointer h-full tilt-card-container hover-trigger">
+                <!-- Main Feature -->
+                <a href="https://youtu.be/rVMGM0fdrAo" target="_blank" class="block group cursor-pointer h-full tilt-card-container">
                     <div class="tilt-card aspect-video overflow-hidden bg-noir-800 mb-4 border border-white/5 relative h-64 md:h-auto shadow-2xl">
                         <img src="reformed_village.jpg" 
                              onerror="this.src='https://images.unsplash.com/photo-1590608897129-79da98d15969?q=80&w=800&auto=format&fit=crop'"
@@ -343,10 +367,10 @@
                     </p>
                     <div class="flex gap-4 mt-3">
                          <object class="z-10">
-                            <a href="https://medium.com/@dandywardhana/reformed-village-kampung-markisa-bbe7d8255a7e" target="_blank" class="text-xs text-accent hover:text-white border-b border-transparent hover:border-white transition-colors hover-trigger">Read Essay</a>
+                            <a href="https://medium.com/@dandywardhana/reformed-village-kampung-markisa-bbe7d8255a7e" target="_blank" class="text-xs text-accent hover:text-white border-b border-transparent hover:border-white transition-colors">Read Essay</a>
                          </object>
                          <object class="z-10">
-                            <a href="https://medium.com/@dandywardhana/interactive-33c8efd93269" target="_blank" class="text-xs text-accent hover:text-white border-b border-transparent hover:border-white transition-colors hover-trigger">View Interactive</a>
+                            <a href="https://medium.com/@dandywardhana/interactive-33c8efd93269" target="_blank" class="text-xs text-accent hover:text-white border-b border-transparent hover:border-white transition-colors">View Interactive</a>
                          </object>
                     </div>
                 </a>
@@ -354,7 +378,7 @@
                 <!-- Secondary Grid -->
                 <div class="grid gap-8 content-start">
                     <!-- Isu Lingkungan -->
-                    <a href="https://www.youtube.com/watch?v=HvVFEa-J5ck&ab_channel=Greenesia" target="_blank" class="flex gap-4 group cursor-pointer items-start hover:translate-x-2 transition-transform duration-300 hover-trigger">
+                    <a href="https://www.youtube.com/watch?v=HvVFEa-J5ck&ab_channel=Greenesia" target="_blank" class="flex gap-4 group cursor-pointer items-start hover:translate-x-2 transition-transform duration-300">
                         <div class="w-32 h-24 bg-noir-800 shrink-0 overflow-hidden border border-white/5 relative">
                             <img src="isu_lingkungan.jpg" 
                                  onerror="this.src='https://images.unsplash.com/photo-1557992260-ec58e38d363c?q=80&w=400&auto=format&fit=crop'"
@@ -369,7 +393,7 @@
                     </a>
 
                     <!-- Anak Muda dan Politik -->
-                    <a href="https://www.youtube.com/watch?v=kON9CyiGjjI" target="_blank" class="flex gap-4 group cursor-pointer items-start hover:translate-x-2 transition-transform duration-300 hover-trigger">
+                    <a href="https://www.youtube.com/watch?v=kON9CyiGjjI" target="_blank" class="flex gap-4 group cursor-pointer items-start hover:translate-x-2 transition-transform duration-300">
                         <div class="w-32 h-24 bg-noir-800 shrink-0 overflow-hidden border border-white/5 relative">
                             <img src="anak_mudapolitik.jpg" 
                                  onerror="this.src='https://images.unsplash.com/photo-1573164713988-8665fc963095?q=80&w=400&auto=format&fit=crop'"
@@ -384,7 +408,7 @@
                     </a>
 
                     <!-- Eyes of Impact -->
-                    <a href="https://www.youtube.com/watch?v=qR60Ut-5mJ0" target="_blank" class="flex gap-4 group cursor-pointer items-start hover:translate-x-2 transition-transform duration-300 hover-trigger">
+                    <a href="https://www.youtube.com/watch?v=qR60Ut-5mJ0" target="_blank" class="flex gap-4 group cursor-pointer items-start hover:translate-x-2 transition-transform duration-300">
                         <div class="w-32 h-24 bg-noir-800 shrink-0 overflow-hidden border border-white/5 relative">
                             <img src="eyes_impact.jpg" 
                                  onerror="this.src='https://images.unsplash.com/photo-1529101091760-61df6be5d187?q=80&w=400&auto=format&fit=crop'"
@@ -397,14 +421,13 @@
                             <p class="text-gray-400 text-sm mt-2 line-clamp-2">Program series highlighting student perspectives on campus issues.</p>
                         </div>
                     </a>
-                    
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Section B: The Vuseanday Archives (Creative) -->
-    <section id="creative" class="py-24 bg-noir-800 border-y border-white/5 section-fade-in">
+    <section id="creative" class="py-12 md:py-24 bg-noir-800 border-y border-white/5 section-fade-in">
         <div class="max-w-6xl mx-auto px-6">
             <div class="text-center mb-16">
                 <p class="font-mono text-accent text-sm tracking-widest mb-2">THE VUSEANDAY ARCHIVES</p>
@@ -416,7 +439,7 @@
 
             <div class="grid md:grid-cols-4 gap-6">
                 <!-- Card 1 -->
-                <a href="https://medium.com/@vuseanday/devils-tears-8baa0ece029d" target="_blank" class="tilt-card block p-8 border border-white/10 hover:border-white/30 hover:bg-noir-700 transition-all duration-300 group hover:-translate-y-1 hover-trigger">
+                <a href="https://medium.com/@vuseanday/devils-tears-8baa0ece029d" target="_blank" class="tilt-card block p-8 border border-white/10 hover:border-white/30 hover:bg-noir-700 transition-all duration-300 group hover:-translate-y-1">
                     <i data-lucide="book-open" class="text-gray-500 mb-6 group-hover:text-white transition-colors"></i>
                     <h3 class="font-serif text-xl text-white mb-2">Devil's Tears</h3>
                     <p class="text-sm text-gray-400 leading-relaxed mb-4">
@@ -426,7 +449,7 @@
                 </a>
 
                 <!-- Card 2 -->
-                <a href="https://medium.com/@vuseanday/manisku-dua-ratus-ribu-2950e0383b82" target="_blank" class="tilt-card block p-8 border border-white/10 hover:border-white/30 hover:bg-noir-700 transition-all duration-300 group hover:-translate-y-1 hover-trigger">
+                <a href="https://medium.com/@vuseanday/manisku-dua-ratus-ribu-2950e0383b82" target="_blank" class="tilt-card block p-8 border border-white/10 hover:border-white/30 hover:bg-noir-700 transition-all duration-300 group hover:-translate-y-1">
                     <i data-lucide="feather" class="text-gray-500 mb-6 group-hover:text-white transition-colors"></i>
                     <h3 class="font-serif text-xl text-white mb-2">Manisku Dua Ratus Ribu</h3>
                     <p class="text-sm text-gray-400 leading-relaxed mb-4">
@@ -436,7 +459,7 @@
                 </a>
 
                 <!-- Card 3 -->
-                <a href="https://medium.com/@vuseanday/we-dont-lose-people-we-return-them-405d6c1f84af" target="_blank" class="tilt-card block p-8 border border-white/10 hover:border-white/30 hover:bg-noir-700 transition-all duration-300 group hover:-translate-y-1 hover-trigger">
+                <a href="https://medium.com/@vuseanday/we-dont-lose-people-we-return-them-405d6c1f84af" target="_blank" class="tilt-card block p-8 border border-white/10 hover:border-white/30 hover:bg-noir-700 transition-all duration-300 group hover:-translate-y-1">
                     <i data-lucide="file-text" class="text-gray-500 mb-6 group-hover:text-white transition-colors"></i>
                     <h3 class="font-serif text-xl text-white mb-2">We Don't Lose People...</h3>
                     <p class="text-sm text-gray-400 leading-relaxed mb-4">
@@ -446,7 +469,7 @@
                 </a>
 
                 <!-- Card 4 -->
-                 <a href="https://medium.com/@vuseanday/tv-show-bbb857f27d33" target="_blank" class="tilt-card block p-8 border border-white/10 hover:border-white/30 hover:bg-noir-700 transition-all duration-300 group hover:-translate-y-1 hover-trigger">
+                 <a href="https://medium.com/@vuseanday/tv-show-bbb857f27d33" target="_blank" class="tilt-card block p-8 border border-white/10 hover:border-white/30 hover:bg-noir-700 transition-all duration-300 group hover:-translate-y-1">
                     <i data-lucide="tv" class="text-gray-500 mb-6 group-hover:text-white transition-colors"></i>
                     <h3 class="font-serif text-xl text-white mb-2">TV Show</h3>
                     <p class="text-sm text-gray-400 leading-relaxed mb-4">
@@ -459,7 +482,7 @@
     </section>
 
     <!-- NEW SECTION: Books (3D Flip Animation) -->
-    <section id="books" class="py-24 bg-noir-900 section-fade-in">
+    <section id="books" class="py-12 md:py-24 bg-noir-900 section-fade-in">
         <div class="max-w-6xl mx-auto px-6">
             <div class="flex items-end gap-4 mb-12 border-b border-white/10 pb-4">
                 <h2 class="font-serif text-3xl md:text-4xl text-white scramble-text" data-original="Publications">Publications</h2>
@@ -467,7 +490,7 @@
 
             <div class="grid md:grid-cols-2 gap-12 justify-center">
                 <!-- Book 1: Dream Girl (Coming Soon) -->
-                <div class="book-container w-full max-w-sm mx-auto aspect-[2/3] hover-trigger">
+                <div class="book-container w-full max-w-sm mx-auto aspect-[2/3]">
                     <div class="book-inner">
                         <div class="book-front bg-noir-800 border border-white/10 flex items-center justify-center overflow-hidden">
                             <!-- Placeholder Cover -->
@@ -491,7 +514,7 @@
                 </div>
 
                 <!-- Book 2: Rehab Thesis (Buy Now) -->
-                <div class="book-container w-full max-w-sm mx-auto aspect-[2/3] hover-trigger">
+                <div class="book-container w-full max-w-sm mx-auto aspect-[2/3]">
                     <div class="book-inner">
                         <div class="book-front bg-noir-800 border border-white/10 flex items-center justify-center overflow-hidden">
                             <!-- Placeholder Cover -->
@@ -516,7 +539,7 @@
     </section>
 
     <!-- Section C: Interactive & Tech -->
-    <section id="interactive" class="py-24 bg-noir-900 border-t border-white/5 section-fade-in">
+    <section id="interactive" class="py-12 md:py-24 bg-noir-800 border-t border-white/5 section-fade-in">
         <div class="max-w-6xl mx-auto px-6">
             <div class="flex items-end gap-4 mb-12 border-b border-white/10 pb-4">
                 <h2 class="font-serif text-3xl md:text-4xl text-white scramble-text" data-original="Interactive & Audio">Interactive & Audio</h2>
@@ -534,7 +557,7 @@
                             <h3 class="font-serif text-2xl text-white mb-1">Cosmic Harvest</h3>
                             <p class="text-sm text-gray-300">Browser-Based Game Development</p>
                         </div>
-                        <a href="https://vuseanday.github.io/platformer/" target="_blank" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white text-black rounded-full p-4 opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 z-30 hover-trigger">
+                        <a href="https://vuseanday.github.io/platformer/" target="_blank" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white text-black rounded-full p-4 opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 z-30">
                             <i data-lucide="play" class="fill-current"></i>
                         </a>
                     </div>
@@ -554,7 +577,7 @@
                     <h3 class="font-serif text-xl text-white border-l-2 border-white pl-4">Audio Features</h3>
                     
                     <!-- Audio Item 1: Astonishing Intermoda -->
-                    <div class="flex items-center gap-4 group hover:bg-white/5 p-2 rounded transition-colors duration-300 hover-trigger">
+                    <div class="flex items-center gap-4 group hover:bg-white/5 p-2 rounded transition-colors duration-300">
                         <div class="w-16 h-16 bg-gray-800 shrink-0 border border-white/5 overflow-hidden">
                             <img src="astonishing_intermoda.jpg" 
                                  onerror="this.parentNode.innerHTML='<i data-lucide=\'mic\' class=\'text-gray-500\'></i>'; lucide.createIcons();"
@@ -568,7 +591,7 @@
                     </div>
 
                     <!-- Audio Item 2: Will You Be My Gwen -->
-                    <div class="flex items-center gap-4 group hover:bg-white/5 p-2 rounded transition-colors duration-300 hover-trigger">
+                    <div class="flex items-center gap-4 group hover:bg-white/5 p-2 rounded transition-colors duration-300">
                         <div class="w-16 h-16 bg-gray-800 shrink-0 border border-white/5 overflow-hidden">
                             <img src="wybmg.jpg" 
                                  onerror="this.parentNode.innerHTML='<i data-lucide=\'music\' class=\'text-gray-500\'></i>'; lucide.createIcons();"
@@ -586,7 +609,7 @@
     </section>
 
     <!-- Section: Digital Media & Content (NEW) -->
-    <section id="digital" class="py-24 bg-noir-800 border-t border-white/5 section-fade-in">
+    <section id="digital" class="py-12 md:py-24 bg-noir-800 border-t border-white/5 section-fade-in">
         <div class="max-w-6xl mx-auto px-6">
             <div class="flex items-end gap-4 mb-12">
                 <h2 class="font-serif text-3xl md:text-4xl text-white scramble-text" data-original="Digital Media & Content">Digital Media & Content</h2>
@@ -594,7 +617,7 @@
             
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
                 <!-- Bixfeeds -->
-                <a href="https://www.tiktok.com/@bixfeeds.id?lang=en" target="_blank" class="tilt-card group relative aspect-video bg-black overflow-hidden border border-white/10 hover:border-white/40 transition-all hover-trigger">
+                <a href="https://www.tiktok.com/@bixfeeds.id?lang=en" target="_blank" class="tilt-card group relative aspect-video bg-black overflow-hidden border border-white/10 hover:border-white/40 transition-all">
                     <img src="bixfeeds.jpg" 
                          onerror="this.src='https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=400&auto=format&fit=crop'"
                          class="w-full h-full object-cover opacity-60 grayscale group-hover:grayscale-0 transition-all duration-500">
@@ -607,7 +630,7 @@
                 </a>
 
                  <!-- Kepo-In -->
-                 <a href="https://www.tiktok.com/@kepoin.mp3" target="_blank" class="tilt-card group relative aspect-video bg-black overflow-hidden border border-white/10 hover:border-white/40 transition-all hover-trigger">
+                 <a href="https://www.tiktok.com/@kepoin.mp3" target="_blank" class="tilt-card group relative aspect-video bg-black overflow-hidden border border-white/10 hover:border-white/40 transition-all">
                     <img src="kepoin.jpg" 
                          onerror="this.src='https://images.unsplash.com/photo-1611605698389-ecd18ccd4386?q=80&w=400&auto=format&fit=crop'"
                          class="w-full h-full object-cover opacity-60 grayscale group-hover:grayscale-0 transition-all duration-500">
@@ -620,7 +643,7 @@
                 </a>
 
                  <!-- HaCing -->
-                 <a href="https://www.tiktok.com/@hhacing?lang=en" target="_blank" class="tilt-card group relative aspect-video bg-black overflow-hidden border border-white/10 hover:border-white/40 transition-all hover-trigger">
+                 <a href="https://www.tiktok.com/@hhacing?lang=en" target="_blank" class="tilt-card group relative aspect-video bg-black overflow-hidden border border-white/10 hover:border-white/40 transition-all">
                     <img src="hacing.jpg" 
                          onerror="this.src='https://images.unsplash.com/photo-1516280440614-6697288d5d38?q=80&w=400&auto=format&fit=crop'"
                          class="w-full h-full object-cover opacity-60 grayscale group-hover:grayscale-0 transition-all duration-500">
@@ -633,7 +656,7 @@
                 </a>
 
                 <!-- Pocky Launch -->
-                <a href="https://www.instagram.com/reel/C8q3kOFyQti/?igsh=M2U5eTRmZzRkOXVq" target="_blank" class="tilt-card group relative aspect-video bg-black overflow-hidden border border-white/10 hover:border-white/40 transition-all hover-trigger">
+                <a href="https://www.instagram.com/reel/C8q3kOFyQti/?igsh=M2U5eTRmZzRkOXVq" target="_blank" class="tilt-card group relative aspect-video bg-black overflow-hidden border border-white/10 hover:border-white/40 transition-all">
                     <img src="pocky.jpg" 
                          onerror="this.src='https://images.unsplash.com/photo-1541532713592-796d394b9e4f?q=80&w=400&auto=format&fit=crop'"
                          class="w-full h-full object-cover opacity-60 grayscale group-hover:grayscale-0 transition-all duration-500">
@@ -649,7 +672,7 @@
     </section>
 
     <!-- NEW SECTION: Handmade & DIY (Card Stack) -->
-    <section id="diy" class="py-24 bg-noir-900 border-t border-white/5 section-fade-in">
+    <section id="diy" class="py-12 md:py-24 bg-noir-900 border-t border-white/5 section-fade-in">
         <div class="max-w-6xl mx-auto px-6">
             <div class="flex items-end gap-4 mb-12">
                 <h2 class="font-serif text-3xl md:text-4xl text-white scramble-text" data-original="Handmade & DIY">Handmade & DIY</h2>
@@ -660,7 +683,7 @@
                 <div>
                     <h3 class="font-serif text-2xl text-white mb-6">Custom Posters</h3>
                     <p class="text-xs text-gray-500 mb-4 font-mono">CLICK STACK TO CYCLE</p>
-                    <div class="card-stack hover-trigger" onclick="cycleStack(this)">
+                    <div class="card-stack" onclick="cycleStack(this)">
                         <!-- Stack Items 1-5 -->
                         <div class="stack-item"><img src="poster5.jpg" onerror="this.src='https://images.unsplash.com/photo-1572947650440-e8a97ef053b2?q=80&w=800&auto=format&fit=crop'" class="w-full h-full object-cover"></div>
                         <div class="stack-item"><img src="poster4.jpg" onerror="this.src='https://images.unsplash.com/photo-1586075010923-2dd4570fb338?q=80&w=800&auto=format&fit=crop'" class="w-full h-full object-cover"></div>
@@ -681,7 +704,7 @@
                 <div>
                     <h3 class="font-serif text-2xl text-white mb-6">Custom Clothing</h3>
                     <p class="text-xs text-gray-500 mb-4 font-mono">CLICK STACK TO CYCLE</p>
-                    <div class="card-stack hover-trigger" onclick="cycleStack(this)">
+                    <div class="card-stack" onclick="cycleStack(this)">
                         <!-- Stack Items 1-5 -->
                         <div class="stack-item"><img src="clothing5.jpg" onerror="this.src='https://images.unsplash.com/photo-1503341455253-b2e72333dbdb?q=80&w=800&auto=format&fit=crop'" class="w-full h-full object-cover"></div>
                         <div class="stack-item"><img src="clothing4.jpg" onerror="this.src='https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=800&auto=format&fit=crop'" class="w-full h-full object-cover"></div>
@@ -702,14 +725,14 @@
     </section>
 
     <!-- Section D: Organization & Leadership -->
-    <section id="organization" class="py-24 bg-noir-900 border-t border-white/5 section-fade-in">
+    <section id="organization" class="py-12 md:py-24 bg-noir-900 border-t border-white/5 section-fade-in">
         <div class="max-w-4xl mx-auto px-6">
             <h2 class="font-serif text-3xl text-center text-white mb-12 scramble-text" data-original="Experience & Organization">Experience & Organization</h2>
             
             <div class="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-gray-700 before:to-transparent">
                 
                 <!-- Timeline Item: Tirto.id -->
-                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active hover-trigger">
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
                     <div class="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-noir-900 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 group-hover:scale-110 transition-transform">
                         <i data-lucide="pen-tool" class="w-4 h-4 text-white"></i>
                     </div>
@@ -726,7 +749,7 @@
                 </div>
 
                 <!-- Timeline Item: Bixfeeds -->
-                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active hover-trigger">
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
                     <div class="flex items-center justify-center w-10 h-10 rounded-full border border-gray-600 bg-noir-900 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 group-hover:scale-110 transition-transform">
                         <i data-lucide="share-2" class="w-4 h-4 text-gray-400"></i>
                     </div>
@@ -743,7 +766,7 @@
                 </div>
 
                 <!-- Timeline Item: Event Coordinator -->
-                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active hover-trigger">
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
                     <div class="flex items-center justify-center w-10 h-10 rounded-full border border-gray-600 bg-noir-900 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 group-hover:scale-110 transition-transform">
                         <i data-lucide="users" class="w-4 h-4 text-gray-400"></i>
                     </div>
@@ -760,7 +783,7 @@
                 </div>
 
                 <!-- Timeline Item: PIC -->
-                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active hover-trigger">
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
                     <div class="flex items-center justify-center w-10 h-10 rounded-full border border-gray-600 bg-noir-900 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 group-hover:scale-110 transition-transform">
                         <i data-lucide="flag" class="w-4 h-4 text-gray-400"></i>
                     </div>
@@ -793,10 +816,10 @@
                      <label class="block text-xs text-gray-500 uppercase tracking-widest mb-2">Message</label>
                      <textarea name="message" rows="4" required class="w-full bg-noir-900 border border-white/10 p-3 text-white focus:border-white transition-colors outline-none hover:border-white/40 focus:border-white"></textarea>
                  </div>
-                 <button type="submit" class="w-full bg-white text-black font-medium py-3 hover:bg-gray-200 transition-colors transform active:scale-95 hover-trigger">SEND MESSAGE</button>
+                 <button type="submit" class="w-full bg-white text-black font-medium py-3 hover:bg-gray-200 transition-colors transform active:scale-95">SEND MESSAGE</button>
              </form>
              <p class="mt-8 text-gray-500 text-sm">
-                 Prefer email? <a href="mailto:vuseanday@gmail.com" class="text-white underline hover:text-gray-300 hover-trigger">vuseanday@gmail.com</a>
+                 Prefer email? <a href="mailto:vuseanday@gmail.com" class="text-white underline hover:text-gray-300">vuseanday@gmail.com</a>
              </p>
          </div>
     </section>
@@ -806,9 +829,9 @@
         <div class="max-w-4xl mx-auto px-6 text-center">
             <h2 class="font-serif text-2xl mb-6">Let's tell a story together.</h2>
             <div class="flex justify-center gap-6 mb-8">
-                <a href="https://medium.com/@vuseanday" target="_blank" class="text-gray-400 hover:text-white transition-colors hover:scale-110 transform duration-200 hover-trigger"><i data-lucide="book-open"></i></a>
-                <a href="https://www.linkedin.com/in/aldandi-gowawardhana-05bb45280/" target="_blank" class="text-gray-400 hover:text-white transition-colors hover:scale-110 transform duration-200 hover-trigger"><i data-lucide="linkedin"></i></a>
-                <a href="mailto:vuseanday@gmail.com" class="text-gray-400 hover:text-white transition-colors hover:scale-110 transform duration-200 hover-trigger"><i data-lucide="mail"></i></a>
+                <a href="https://medium.com/@vuseanday" target="_blank" class="text-gray-400 hover:text-white transition-colors hover:scale-110 transform duration-200"><i data-lucide="book-open"></i></a>
+                <a href="https://www.linkedin.com/in/aldandi-gowawardhana-05bb45280/" target="_blank" class="text-gray-400 hover:text-white transition-colors hover:scale-110 transform duration-200"><i data-lucide="linkedin"></i></a>
+                <a href="mailto:vuseanday@gmail.com" class="text-gray-400 hover:text-white transition-colors hover:scale-110 transform duration-200"><i data-lucide="mail"></i></a>
             </div>
             <p class="text-gray-600 text-xs font-mono">
                 © 2025 Aldandi Gowawardhana. All rights reserved. <br>
@@ -818,12 +841,12 @@
     </footer>
 
     <!-- Back to Top Button -->
-    <button id="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="fixed bottom-24 right-8 z-40 bg-noir-800 border border-white/20 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-white hover:text-black transition-all shadow-lg group hover-trigger">
+    <button id="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="fixed bottom-24 right-8 z-40 bg-noir-800 border border-white/20 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-white hover:text-black transition-all shadow-lg group">
         <i data-lucide="arrow-up" class="w-5 h-5"></i>
     </button>
 
     <!-- Floating Action Button for Services -->
-    <a href="https://vuseanday.github.io" class="fixed bottom-8 right-8 z-50 group hover-trigger">
+    <a href="https://vuseanday.github.io" class="fixed bottom-8 right-8 z-50 group">
         <div class="absolute bottom-full right-0 mb-3 w-48 bg-white text-black text-xs p-3 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none shadow-lg text-right">
             Need creative solutions? <br><strong>Hire Vuseanday Services.</strong>
         </div>
@@ -892,16 +915,26 @@
         const iris = document.getElementById('iris');
         const eyelid = document.getElementById('eyelid');
 
-        // Track Mouse
+        // Mouse Tracker
         document.addEventListener('mousemove', (e) => {
+            updateEye(e.clientX, e.clientY);
+        });
+
+        // Touch Tracker for Mobile
+        document.addEventListener('touchmove', (e) => {
+            const touch = e.touches[0];
+            updateEye(touch.clientX, touch.clientY);
+        });
+
+        function updateEye(x, y) {
             if (!eye) return;
             const rect = eye.getBoundingClientRect();
             const eyeX = rect.left + rect.width / 2;
             const eyeY = rect.top + rect.height / 2;
             
             // Calculate angle and limited distance
-            const angle = Math.atan2(e.clientY - eyeY, e.clientX - eyeX);
-            const distance = Math.min(3, Math.hypot(e.clientX - eyeX, e.clientY - eyeY) / 10); // slightly increased movement range
+            const angle = Math.atan2(y - eyeY, x - eyeX);
+            const distance = Math.min(3, Math.hypot(x - eyeX, y - eyeY) / 10);
             
             const irisX = Math.cos(angle) * distance;
             const irisY = Math.sin(angle) * distance;
@@ -909,12 +942,12 @@
             // Move Iris
             iris.style.transform = `translate(${irisX}px, ${irisY}px)`;
             
-            // Slight Pupil movement relative to iris for depth effect
+            // Slight Pupil movement
             const pupilX = Math.cos(angle) * (distance * 0.3); 
             const pupilY = Math.sin(angle) * (distance * 0.3);
             
             pupil.style.transform = `translate(${pupilX}px, ${pupilY}px)`;
-        });
+        }
 
         // Random Blinking
         function blink() {
@@ -993,33 +1026,44 @@
             }
         });
 
-        // 3D Tilt Effect Logic
-        document.querySelectorAll('.tilt-card, .tilt-card-container').forEach(card => {
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-                
-                const rotateX = ((y - centerY) / centerY) * -5; // Max rotation deg
-                const rotateY = ((x - centerX) / centerX) * 5;
+        // 3D Tilt Effect Logic (Desktop Only)
+        if (window.matchMedia("(min-width: 768px)").matches) {
+            document.querySelectorAll('.tilt-card, .tilt-card-container').forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    
+                    const rotateX = ((y - centerY) / centerY) * -5; // Max rotation deg
+                    const rotateY = ((x - centerX) / centerX) * 5;
 
-                // Apply the transform to the card itself or specific child if container
-                const target = card.classList.contains('tilt-card') ? card : card.querySelector('.tilt-card');
-                if(target) {
-                    target.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-                }
-            });
+                    // Apply the transform to the card itself or specific child if container
+                    const target = card.classList.contains('tilt-card') ? card : card.querySelector('.tilt-card');
+                    if(target) {
+                        target.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+                    }
+                });
 
-            card.addEventListener('mouseleave', () => {
-                const target = card.classList.contains('tilt-card') ? card : card.querySelector('.tilt-card');
-                if(target) {
-                    target.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
-                }
+                card.addEventListener('mouseleave', () => {
+                    const target = card.classList.contains('tilt-card') ? card : card.querySelector('.tilt-card');
+                    if(target) {
+                        target.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+                    }
+                });
             });
-        });
+        }
+
+        // Feature 2: Flashlight Effect Logic
+        const flashlight = document.getElementById('flashlight');
+        if (flashlight) {
+            document.addEventListener('mousemove', (e) => {
+                flashlight.style.setProperty('--x', e.clientX + 'px');
+                flashlight.style.setProperty('--y', e.clientY + 'px');
+            });
+        }
 
         // Feature 3: Magnetic Buttons Logic
         const magneticBtns = document.querySelectorAll('.magnetic-btn');
@@ -1058,7 +1102,7 @@
                     clearInterval(interval);
                 }
                 
-                iterations += 2.5; // Adjusted speed as requested
+                iterations += 2.5; // Adjusted speed
             }, 30);
         }
 
