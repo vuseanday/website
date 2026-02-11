@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aldandi Gowawardhana | Multimedia Journalist</title>
     
-    <!-- Favicon (The Eye) -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0OCIgZmlsbD0iI2YwZjBmMCIgc3Ryb2tlPSIjOWNhM2FmIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNMTAsNTAgUTMwLDQ1IDQwLDUwIiBzdHJva2U9InJnYmEoMjIwLCAzOCwgMzgsIDAuNikiIHN0cm9rZS13aWR0aD0iMyIgZmlsbD0ibm9uZSIvPjxwYXRoIGQ9Ik05MCw1MCBRNzAsNTUgNjAsNTAiIHN0cm9rZT0icmdiYSgyMjAsIDM4LCAzOCwgMC42KSIgc3Ryb2tlLXdpZHRoPSIzIiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTUwLDEwIFE1NSwzMCA1MCw0MCIgc3Ryb2tlPSJyZ2JhKDIyMCwgMzgsIDM4LCAwLjYpIiBzdHJva2Utd2lkdGg9IjMiIGZpbGw9Im5vbmUiLz48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIyMCIgZmlsbD0iI2I5MWMxYyIgc3Ryb2tlPSIjN2YxZDFkIiBzdHJva2Utd2lkdGg9IjEiLz48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIxMCIgZmlsbD0iYmxhY2siLz48Y2lyY2xlIGN4PSI1NSIgY3k9IjQ1IiByPSIzIiBmaWxsPSJ3aGl0ZSIgb3BhY2l0eT0iMC42Ii8+PC9zdmc+">
+    <!-- Favicon (The Eye) - Simplified SVG Data URI for reliability -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ef4444' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -41,18 +41,43 @@
         }
     </script>
     <style>
-        /* Flashlight Effect - Hidden on Mobile to save battery/performance */
-        @media (min-width: 768px) {
-            #flashlight {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                pointer-events: none;
-                z-index: 40;
-                background: radial-gradient(circle 600px at var(--x, 50%) var(--y, 50%), rgba(255,255,255,0.03) 0%, transparent 100%);
-            }
+        /* Hide Default Cursor */
+        body {
+            cursor: none;
+        }
+        
+        /* Custom Cursor */
+        #custom-cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 20px;
+            height: 20px;
+            border: 1px solid white;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, background-color 0.3s;
+            mix-blend-mode: difference;
+        }
+        #custom-cursor.hovered {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: transparent;
+        }
+
+        /* Flashlight Effect */
+        #flashlight {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 40; /* Below content but above background */
+            background: radial-gradient(circle 600px at var(--x, 50%) var(--y, 50%), rgba(255,255,255,0.03) 0%, transparent 100%);
         }
 
         /* Custom Scrollbar */
@@ -70,7 +95,7 @@
             background: #525252; 
         }
         
-        /* Smooth Fade In Animation */
+        /* Smooth Fade In Animation for Sections */
         .section-fade-in {
             opacity: 0;
             transform: translateY(20px);
@@ -96,15 +121,16 @@
         /* Realistic Eye Details */
         #eye {
             box-shadow: inset 0 0 4px rgba(0,0,0,0.4);
-            background: radial-gradient(circle at 30% 30%, #fff0f0 10%, #ffe0e0 80%, #ffcccc 100%);
+            background: radial-gradient(circle at 30% 30%, #fff0f0 10%, #ffe0e0 80%, #ffcccc 100%); /* Reddish tint to sclera */
         }
         #iris {
-            background: radial-gradient(circle, #ef4444 0%, #b91c1c 70%, #7f1d1d 100%);
+            background: radial-gradient(circle, #ef4444 0%, #b91c1c 70%, #7f1d1d 100%); /* Red iris */
             border: 1px solid #7f1d1d;
         }
+        /* Red Veins in Eye */
         .vein {
             position: absolute;
-            background: rgba(220, 38, 38, 0.6);
+            background: rgba(220, 38, 38, 0.6); /* More visible red */
             height: 1px;
             pointer-events: none;
         }
@@ -131,18 +157,16 @@
             top: 0;
             left: 0;
             height: 3px;
-            background: linear-gradient(to right, #b91c1c, #ef4444);
+            background: linear-gradient(to right, #b91c1c, #ef4444); /* Red gradient matching eye */
             z-index: 100;
             width: 0%;
             transition: width 0.1s;
         }
 
-        /* 3D Tilt Effect - Desktop Only */
-        @media (min-width: 768px) {
-            .tilt-card {
-                transition: transform 0.1s ease-out;
-                transform-style: preserve-3d;
-            }
+        /* 3D Tilt Effect */
+        .tilt-card {
+            transition: transform 0.1s ease-out;
+            transform-style: preserve-3d;
         }
         
         /* Back to Top Button */
@@ -158,7 +182,7 @@
             transform: translateY(0);
         }
 
-        /* Book Flip Styles */
+        /* Book Flip Styles - Fixed Overflow */
         .book-container {
             perspective: 1000px;
             cursor: pointer;
@@ -181,11 +205,11 @@
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
             border-radius: 4px;
-            overflow: hidden;
+            overflow: hidden; /* Ensures content stays inside */
         }
         .book-back {
             transform: rotateY(180deg);
-            background-color: #171717;
+            background-color: #171717; /* noir-800 */
             border: 1px solid rgba(255,255,255,0.1);
             display: flex;
             flex-direction: column;
@@ -194,22 +218,14 @@
             padding: 2rem;
         }
 
-        /* Interactive Card Stack Styles */
+        /* Interactive Card Stack Styles (5 Items) - Portrait */
         .card-stack {
             position: relative;
             width: 100%;
-            height: 450px; /* Adjusted for portrait items */
+            height: 500px; /* Increased height for portrait */
             perspective: 1000px;
             cursor: pointer;
-            margin-bottom: 2rem; /* Add margin for mobile layout */
         }
-        @media (min-width: 768px) {
-             .card-stack {
-                 height: 500px;
-                 margin-bottom: 0;
-             }
-        }
-
         .stack-item {
             position: absolute;
             top: 0;
@@ -224,12 +240,14 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
         
+        /* Stack Hierachy */
         .stack-item:nth-child(1) { z-index: 5; transform: translateY(0) scale(1); opacity: 1; }
         .stack-item:nth-child(2) { z-index: 4; transform: translateY(-15px) scale(0.97); opacity: 0.8; }
         .stack-item:nth-child(3) { z-index: 3; transform: translateY(-30px) scale(0.94); opacity: 0.6; }
         .stack-item:nth-child(4) { z-index: 2; transform: translateY(-45px) scale(0.91); opacity: 0.4; }
         .stack-item:nth-child(5) { z-index: 1; transform: translateY(-60px) scale(0.88); opacity: 0.2; }
         
+        /* Hide others */
         .stack-item:nth-child(n+6) {
             z-index: 0;
             transform: translateY(-75px) scale(0.85);
@@ -237,6 +255,7 @@
             pointer-events: none;
         }
 
+        /* Hover effect for the whole stack */
         .card-stack:hover .stack-item:nth-child(1) {
             transform: translateY(-8px);
             border-color: rgba(255, 255, 255, 0.4);
@@ -327,7 +346,7 @@
                     Merging investigative rigor with creative narrative.
                 </p>
                 <div class="flex flex-col md:flex-row justify-center items-center gap-3 text-sm text-gray-500 font-mono">
-                    <span class="flex items-center gap-2 hover:text-white transition-colors"><i data-lucide="map-pin" class="w-4 h-4"></i> Final-Year at UMN</span>
+                    <span class="flex items-center gap-2 hover:text-white transition-colors"><i data-lucide="map-pin" class="w-4 h-4"></i> Communication Graduate, UMN</span>
                     <span class="hidden md:inline">•</span>
                     <span class="flex items-center gap-2 hover:text-white transition-colors"><i data-lucide="pen-tool" class="w-4 h-4"></i> Writing "Dream Girl"</span>
                     <span class="hidden md:inline">•</span>
@@ -731,6 +750,23 @@
             
             <div class="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-gray-700 before:to-transparent">
                 
+                <!-- NEW Timeline Item: Astra Financial @ GIIAS -->
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-noir-900 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 group-hover:scale-110 transition-transform">
+                        <i data-lucide="briefcase" class="w-4 h-4 text-white"></i>
+                    </div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 border border-white/10 bg-noir-800 hover:border-white/30 transition-colors">
+                        <div class="flex items-center justify-between space-x-2 mb-1">
+                            <div class="font-bold text-white">Astra Financial @ GIIAS 2025</div>
+                            <time class="font-mono text-xs text-gray-500">July - Aug 2025</time>
+                        </div>
+                        <div class="text-sm text-accent mb-2">Sales Representative</div>
+                        <p class="text-gray-400 text-xs leading-snug">
+                            Sales and marketing at Gaikindo Indonesia International Auto Show.
+                        </p>
+                    </div>
+                </div>
+
                 <!-- Timeline Item: Tirto.id -->
                 <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
                     <div class="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-noir-900 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 group-hover:scale-110 transition-transform">
