@@ -144,24 +144,41 @@
             transform: translateY(0);
         }
 
-        /* Book Flip Styles */
+        /* Book Flip Styles - Optimized for Safari/iOS Mobile */
         .book-container {
+            position: relative;
+            width: 100%;
+            max-width: 320px;
+            height: 480px; /* Explicit height instead of aspect-ratio to fix Safari collapse bug */
+            margin: 0 auto;
             perspective: 1000px;
+            -webkit-perspective: 1000px;
             cursor: pointer;
+        }
+        @media (max-width: 768px) {
+            .book-container {
+                height: 420px;
+                max-width: 280px;
+            }
         }
         .book-inner {
             position: relative;
             width: 100%;
             height: 100%;
             text-align: center;
-            transition: transform 0.8s;
+            transition: transform 0.8s cubic-bezier(0.4, 0.2, 0.2, 1);
             transform-style: preserve-3d;
+            -webkit-transform-style: preserve-3d;
         }
-        .book-container:hover .book-inner {
+        .book-container:hover .book-inner,
+        .book-container.flipped .book-inner {
             transform: rotateY(180deg);
+            -webkit-transform: rotateY(180deg);
         }
         .book-front, .book-back {
             position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             -webkit-backface-visibility: hidden;
@@ -169,8 +186,14 @@
             border-radius: 4px;
             overflow: hidden;
         }
+        .book-front {
+            z-index: 2;
+            transform: rotateY(0deg);
+            -webkit-transform: rotateY(0deg);
+        }
         .book-back {
             transform: rotateY(180deg);
+            -webkit-transform: rotateY(180deg);
             background-color: #171717;
             border: 1px solid rgba(255,255,255,0.1);
             display: flex;
@@ -467,13 +490,15 @@
     <!-- NEW SECTION: Books (3D Flip Animation) -->
     <section id="books" class="py-12 md:py-24 bg-noir-900 section-fade-in">
         <div class="max-w-6xl mx-auto px-6">
-            <div class="flex items-end gap-4 mb-12 border-b border-white/10 pb-4">
+            <div class="flex items-end gap-4 mb-8 md:mb-12 border-b border-white/10 pb-4">
                 <h2 class="font-serif text-3xl md:text-4xl text-white scramble-text" data-original="Publications">Publications</h2>
             </div>
+            
+            <p class="text-xs text-gray-500 mb-8 font-mono text-center md:hidden">TAP BOOK TO FLIP</p>
 
             <div class="grid md:grid-cols-2 gap-12 justify-center">
                 <!-- Book 1: Dream Girl (Coming Soon) -->
-                <div class="book-container w-full max-w-sm mx-auto aspect-[2/3]">
+                <div class="book-container" onclick="this.classList.toggle('flipped')">
                     <div class="book-inner">
                         <div class="book-front bg-noir-800 border border-white/10 flex items-center justify-center overflow-hidden">
                             <!-- Placeholder Cover -->
@@ -497,7 +522,7 @@
                 </div>
 
                 <!-- Book 2: Rehab Thesis (Buy Now) -->
-                <div class="book-container w-full max-w-sm mx-auto aspect-[2/3]">
+                <div class="book-container" onclick="this.classList.toggle('flipped')">
                     <div class="book-inner">
                         <div class="book-front bg-noir-800 border border-white/10 flex items-center justify-center overflow-hidden">
                             <!-- Placeholder Cover -->
